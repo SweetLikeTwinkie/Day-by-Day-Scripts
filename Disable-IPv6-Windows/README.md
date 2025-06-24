@@ -1,109 +1,70 @@
-# 🛑 Disable IPv6 on Windows via PowerShell
+# Disable IPv6 on Windows via PowerShell
 
-This PowerShell script disables IPv6 on a Windows system both system-wide and on all active network adapters.
+## Overview
 
----
+This PowerShell script disables IPv6 on a Windows machine by:
+1. Configuring the registry to disable IPv6 system-wide.
+2. Disabling the IPv6 binding (`ms_tcpip6`) on all active network adapters.
 
-## ⚠️ Disclaimer
-
-> Disabling IPv6 can cause certain features to malfunction, including:
-> - HomeGroup
-> - DirectAccess
-> - Exchange / Outlook integration
-> - Some Microsoft services  
-> Proceed with caution. **A reboot is required** after running the script.
+A system **reboot** is required to apply the changes.
 
 ---
 
-## 📂 Files
+## Prerequisites
 
-- `disable_IPv6.ps1` — Main PowerShell script
-- `README.md` — This documentation file
-
----
-
-## ✅ Features
-
-- Disables IPv6 via `DisabledComponents` registry key
-- Disables IPv6 binding (`ms_tcpip6`) on all active hardware adapters
-- Outputs status messages for each step
+- Windows 10 or Windows 11.
+- PowerShell 5.1 or later.
+- Administrator privileges.
 
 ---
 
-## 💡 How to Use
+## Installation
 
-### 1. Download the Script
-
-Clone this repo or download `disable_IPv6.ps1` directly to your system.
+Clone the repository or download the scripts directly:
 
 ```bash
-git clone https://github.com/yourusername/disable-ipv6
+git clone https://github.com/yourusername/disable-ipv6.git
 cd disable-ipv6
-Or manually place the file in a known folder (e.g. Downloads).
+```
 
-2. Unblock the Script
-Option A: File Explorer
-Right-click the .ps1 file → Properties
+Alternatively, download `disable_IPv6.ps1` into your preferred directory.
 
-Check Unblock at the bottom (if present)
+---
 
-Click OK
+## Usage
 
-Option B: PowerShell
-powershell
-Copy
-Edit
-Unblock-File -Path ".\disable_IPv6.ps1"
-3. Run the Script as Administrator
-Open PowerShell as Administrator, then run:
+1. **Unblock the script (if required)**  
+   ```powershell
+   Unblock-File -Path ".\disable_IPv6.ps1"
+   ```
 
-powershell
-Copy
-Edit
-Set-ExecutionPolicy Bypass -Scope Process -Force
-.\disable_IPv6.ps1
-4. Restart Your PC
-A full system reboot is required for the registry changes to take effect.
+2. **Execute the script as Administrator**  
+   Open an elevated PowerShell prompt and run:  
+   ```powershell
+   Set-ExecutionPolicy Bypass -Scope Process -Force
+   .\disable_IPv6.ps1
+   ```
 
-🔁 Re-enable IPv6
-If you wish to undo the changes:
+3. **Reboot the system**  
+   Restart your computer to complete the IPv6 disable process.
 
-1. Remove the Registry Key
-powershell
-Copy
-Edit
-Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" -Name "DisabledComponents"
-2. Re-enable IPv6 Bindings
-powershell
-Copy
-Edit
-Enable-NetAdapterBinding -Name "*" -ComponentID ms_tcpip6
-Replace * with a specific adapter name if needed (e.g. "Ethernet").
+---
 
-3. Restart the System
-🧰 Requirements
-Windows 10 / 11
+## Reverting Changes
 
-PowerShell 5.1+
+To re-enable IPv6, perform the following steps:
 
-Administrator privileges
+1. **Remove the registry modification**  
+   ```powershell
+   Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" -Name "DisabledComponents"
+   ```
 
-🛡️ Execution Policy Notes
-If PowerShell blocks script execution:
+2. **Re-enable IPv6 adapter binding**  
+   ```powershell
+   Enable-NetAdapterBinding -Name "*" -ComponentID ms_tcpip6
+   ```
 
-Temporary Bypass:
-powershell
-Copy
-Edit
-Set-ExecutionPolicy Bypass -Scope Process -Force
-Allow Local Scripts Permanently:
-powershell
-Copy
-Edit
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-To revert to default:
+3. **Reboot the system** to restore IPv6 functionality.
 
-powershell
-Copy
-Edit
-Set-ExecutionPolicy Restricted -Scope CurrentUser
+
+---
